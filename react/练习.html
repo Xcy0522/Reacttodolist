@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="wrap"></div>
+  <script type="text/babel">
+      表格 
+      class Form extends React.Component{
+          constructor(props){
+              super(props);
+
+          }
+          render(){
+              return(
+                  <div>
+                    <div>
+                        <input/>
+                        <br/>
+                        <textarea></textarea>
+                        <br/>
+                        <input type="submit" value = "提交"/>
+                    </div> 
+                  </div>
+              )
+          }
+      }
+      //列表
+      class List extends React.Component{
+          constructor(props){
+              super(props);
+          }
+          delete(index){
+              console.log(this.props)
+                this.props.cb(index);
+          }
+          render(){
+            let {listData} = this.props;
+              return(
+                  <ol>
+                        {listData.map(({title,des,id},index)=>{
+                                return(
+                                    <li key={id}>
+                                    <h3>{title}</h3>
+                                    <p>{des}</p>
+                                    <button onClick = {this.delete.bind(this)}>删除A</button>
+                                    <button onClick = {()=>{this.delete()}}>删除B</button>
+                                    </li>
+                                )
+                        })
+                    }                   
+                  </ol>
+              )
+          }
+      }
+      //容器
+      class Container extends React.Component{
+          constructor(props){
+              super(props);
+              this.delete_data = this.delete_data.bind(this);
+              this.state ={
+                listData:[
+                    {
+                        title:"打招呼",
+                        des:"你好",
+                        id: 1
+                    },
+                    {
+                        title:"学习",
+                        des:"打字",
+                        id: 2
+                    }
+                ]
+            };
+          }
+        //删除元素  
+          delete_data(index){
+            //方式一
+            this.state.listData.splice(index,1);
+            // 方式二
+             this.setState({
+                 listData:this.state.listData,
+             })
+          }
+          render(){
+              let {listData} = this.state;
+              return(
+                  <div>
+                    <Form/>
+                    <List cb={this.delete_data} listData={listData}/>
+                  </div>
+              )
+          }
+      }
+
+    ReactDOM.render(<Container/>, wrap);
+
+  </script>  
+</body>
+</html>

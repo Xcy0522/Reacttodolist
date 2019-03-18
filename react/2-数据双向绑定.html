@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="serach_baidu">
+    </div>
+
+    <script type="text/babel">
+    /*
+     数据双向绑定:(状态和界面绑定)
+     方向1.修改状态(react中用setState),界面会重新绘制
+     (render函数重新执行)
+     方向2.修改界面(表单的一些交互),状态也会自动更新
+     react中,实现的是方向1,单向数据绑定,方向2需要开发者自己实现
+    */
+    // 大组件
+    class Search extends React.Component{
+        constructor(props){
+            super(props);
+            this.handle = this.handle.bind(this);
+            this.state = {
+                msg:"hello react"
+            };
+        }
+        // 获取输入的最新数据
+        handle(ev){
+            // console.log(ev.target.value);
+            // 界面变了->更新状态->render,界面更新
+            this.setState({
+                msg:ev.target.value
+            });
+        }
+        render(){
+            let {msg} = this.state;
+            return(
+                <div>
+                <p>{msg}</p>
+                {/*监听input输入的内容,同步到状态里*/}
+                  <input onChange = {this.handle} value = {msg}/>
+                </div>
+            );
+        }
+    }
+    ReactDOM.render(<Search/>,serach_baidu);
+    </script>   
+</body>
+</html>

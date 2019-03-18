@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.slim.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="wrap"></div>
+    <script type="text/babel">
+        class Counter extends React.Component{
+            constructor(props){
+                console.log("constructor");
+                super(props);
+                // 修改事件的this指向问题
+                this.plus = this.plus.bind(this);
+
+                // 设置状态值
+                this.state = {
+                    // 默认点击数
+                    num:10,
+                };  
+            }
+            plus(){
+                this.setState(function (oldState) {
+                    let {num} = oldState;
+                    return {
+                        num:++num
+                    };
+                });
+            }
+            render(){
+                console.log("render");
+                return (
+                    <div>
+                        <div id="count">点击次数=<b>{this.state.num}</b></div>
+                        <button onClick={this.plus}>点击累加</button>
+                        <button onClick={()=>{
+                                ReactDOM.unmountComponentAtNode(document.getElementById('wrap'));}}>点击移除组件</button>
+                    </div>
+                );
+            }
+            // componentWillUnmount在组件从 DOM 中移除之前立刻被调用。
+            componentWillUnmount(){
+                console.log("componentWillUnmount");
+            }
+            componentWillMount(){
+                console.log("componentWillMount");
+            }
+            // DOM绘制好了,可以获取dom了
+            componentDidMount(){
+                console.log("componentDidMount");
+                $("#count").css("color","red");
+            }
+            // react会问你要不要更新界面,返回正确就更新,返回错误就不更新
+            shouldComponentUpdate(props,state){
+                // setstate后,参数state是一个副本,它是一个新值,先原始状态this.state还没有改,此时的this.state还是旧的值
+                console.log("shouldComponentUpdate",props,state,this.state);
+                //此函数内可以写if判断
+                if(state.num%2 == 0){
+                    return true
+                }
+                return false;
+            }
+            componentWillUpdate(){
+                // this.state旧值
+                console.log("componentWillUpdate",this.state);
+            }
+            componentDidUpdate(){
+                // 新值了,render函数中this.state已经改了
+                console.log("componentDidUpdate",this.state);
+            }
+
+        }
+        ReactDOM.render(<Counter name="丰田"/>, wrap);
+        /*
+        首次刷新阶段执行顺序:
+        constructor->componentWillMount(渲染前调用)->render(渲染中)->componentDidMount(渲染后调用)
+        更新阶段的执行顺序(假如返回false,停止向下执行):
+        shouldComponentUpdate->componentWillUpdate->render->componentDidUpdate
+        */
+       
+    </script>
+</body>
+</html>

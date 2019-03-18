@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="serach_baidu">
+    </div>
+
+    <script type="text/babel">
+    // 输入的组件
+
+    // 列表展示的组件
+
+    // 大组件
+    class Search extends React.Component{
+        constructor(props){
+            super(props);
+            // 处理this指向
+            this.handle = this.handle.bind(this);
+            //初始化状态
+            this.state = {
+                //保存优化请求的延时计时器id
+                timerId:null,
+                data:["国足出线了","小黄车押金问题","张小龙小程序"]
+            }
+        }
+        handle(ev){
+            // target获得的是事件绑定的对象(即input标签)
+        console.log("输入...",ev.target)
+        // 获取输入框的value
+        let {value} = ev.target;
+        console.log("哈哈哈哈",value);
+        // 发请求:优化
+            clearTimeout(this.state.timerId);
+            // 箭头函数本身没有this,里面的this取决于它的上层作用域(执行环境)
+            this.state.timerId = setTimeout(()=>{
+                //this就是实例对象
+                this.request_baidu(value);
+            },200);
+        }
+        //请求函数
+        request_baidu(value){
+            let _this = this;
+            $.ajax({
+                url:"https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",
+                data:{
+                    wd: value
+                },
+                jsonp:"cb",
+                dataType:"jsonp",
+                success(res){
+                    console.log(res);
+                    _this.setState({
+                        data:res.s
+                    });
+                }
+            });
+        }
+        render(){
+            //拿到数据
+            let{data} = this.state;
+            // 修改布局
+            let li_arr = data.map(function(value,index)
+            {
+                return(
+                <li key = {index}>
+                <p>{value}</p>
+                </li>
+                );
+            });
+            // console.log(li_arr);
+            return(
+                <div className = "search">
+                    <div>
+                        <input onInput={this.handle}/>
+                    </div>
+                    <div>
+                        <ul>
+                            {li_arr}
+                        </ul>
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(<Search/>,serach_baidu);
+    </script>   
+</body>
+</html>
